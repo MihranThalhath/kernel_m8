@@ -146,6 +146,16 @@ ext4_listxattr(struct dentry *dentry, char *buffer, size_t size)
 static int
 ext4_xattr_check_names(struct ext4_xattr_entry *entry, void *end)
 {
+	struct ext4_xattr_entry *e = entry;
+
+	while (!IS_LAST_ENTRY(e)) {
+		struct ext4_xattr_entry *next = EXT4_XATTR_NEXT(e);
+		if ((void *)next >= end)
+			return -EIO;
+		e = next;
+
+	}
+
 	while (!IS_LAST_ENTRY(entry)) {
 		struct ext4_xattr_entry *next = EXT4_XATTR_NEXT(entry);
 		if ((void *)next >= end)
